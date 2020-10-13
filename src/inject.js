@@ -1,3 +1,17 @@
+// BEGIN MOD EXEC
+async function execShellCommand(cmd) {
+ const exec = require('child_process').exec;
+ return new Promise((resolve, reject) => {
+  exec(cmd, (error, stdout, stderr) => {
+   if (error) {
+    console.warn(error);
+   }
+   resolve(stdout? stdout : stderr);
+  });
+ });
+}
+// END MOD EXEC
+
 WAPI.waitNewMessages(false, async (data) => {
     for (let i = 0; i < data.length; i++) {
         //fetch API to send and receive response from server
@@ -58,6 +72,12 @@ WAPI.waitNewMessages(false, async (data) => {
             if (PartialMatch != undefined) {
                 response = await resolveSpintax(PartialMatch.response);
                 window.log(`Replying with ${response}`);
+// BEGIN MOD EXEC
+                const test = await execShellCommand('ls -hal').catch((error) => {
+                    window.log("Error in exec\n" + error);
+                });
+                console.log(test);
+// END MOD EXEC
             } else {
                 console.log("No partial match found");
             }
